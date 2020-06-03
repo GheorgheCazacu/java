@@ -1,12 +1,14 @@
 # spring mysql docker project
 
-###Purpose
+### Purpose
 The purpose of this project is to give an idea how you ca develop a spring boot application
 with a database but without installing on it on the local machine.
 
 ### Prerequisite 
 A version of docker installed locally and functional
 Knowledge of java and gradle
+
+### Runnig the application 
 
 First step is to build the application from Gradle window
 
