@@ -1,0 +1,36 @@
+version: '2.1'
+
+services:
+
+  test-mysql-docker:
+    build: mysql-docker/src
+    mem_limit: 512m
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+    healthcheck:
+      test: "/usr/bin/mysql --user=root --password=root --execute \"SHOW DATABASES;\""
+      interval: 20s
+      timeout: 5s
+      retries: 10
+    networks:
+      - test_services
+
+  web:
+    build: web
+#    image: uber-ms-driver:1.0
+    mem_limit: 512m
+    ports:
+      - "8181:8181"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - MYSQL_HOST=test-mysql-docker
+    depends_on:
+      test-mysql-docker:
+        condition: service_healthy
+    networks:
+      - test_services
+
+networks:
+  test_services:

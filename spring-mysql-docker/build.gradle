@@ -1,0 +1,60 @@
+plugins {
+    id 'org.springframework.boot' version '2.2.0.RELEASE' apply false
+    id 'io.spring.dependency-management' version '1.0.9.RELEASE' apply true
+    id 'com.bmuschko.docker-remote-api' version '6.4.0' apply false
+    id 'java'
+}
+
+subprojects {
+
+    group = 'com.clyde.tutorial'
+    version = '0.0.1-SNAPSHOT'
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencyManagement {
+        imports {
+            mavenBom("org.springframework.boot:spring-boot-dependencies:2.2.0.RELEASE")
+        }
+    }
+
+    compileJava {
+        sourceCompatibility = "1.8"
+        targetCompatibility = "1.8"
+    }
+
+}
+
+repositories {
+    mavenCentral()
+}
+
+import com.bmuschko.gradle.docker.tasks.container.*
+import com.bmuschko.gradle.docker.tasks.image.*
+
+task buildMySqlAppImage(type: DockerBuildImage) {
+    inputDir = file('mysql-docker/src')
+    images.add('test-mysql-docker:latest')
+}
+
+task createMySqlAppContainer(type: DockerCreateContainer) {
+    dependsOn buildMySqlAppImage
+    targetImageId buildMySqlAppImage.getImageId()
+    hostConfig.portBindings = ['3306:3306']
+    hostConfig.autoRemove = true
+}
+
+task buildWebAppImage(type: DockerBuildImage) {
+    inputDir = file('web')
+    images.add('test-web:latest')
+}
+
+task createWebAppContainer(type: DockerCreateContainer) {
+    dependsOn buildWebAppImage
+    targetImageId buildWebAppImage.getImageId()
+    hostConfig.portBindings = ['8181:8181']
+    hostConfig.autoRemove = true
+}
+

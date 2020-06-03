@@ -1,0 +1,5 @@
+rootProject.name = 'spring-mysql-docker'
+
+include 'web'
+include 'mysql-docker'
+
