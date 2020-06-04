@@ -1,0 +1,47 @@
+# Define 'Service' to expose backend application deployment
+apiVersion: v1
+kind: Service
+metadata:
+  name: spring-app-backend
+  namespace: "default"
+spec:
+  selector:  # backend application pod labels should match these
+    app: spring-app
+    tier: backend
+  ports:
+  - protocol: "TCP"
+    port: 8181
+    targetPort: 8181
+  type: NodePort   # use NodePort, if you are not running Kubernetes on cloud
+---
+# Configure 'Deployment' of backend application
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spring-app-backend
+  labels:
+    app: spring-app
+    tier: backend
+spec:
+  replicas: 1    # Number of replicas of back-end application to be deployed
+  selector:
+    matchLabels: # backend application pod labels should match these
+      app: spring-app
+      tier: backend
+  template:
+    metadata:
+      labels: # Must match 'Service' and 'Deployment' labels
+        app: spring-app
+        tier: backend
+    spec:
+      containers:
+      - name: spring-app-backend
+        image: web-spring:latest   # docker image of backend application
+        imagePullPolicy: Never
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: "docker"
+        - name: MYSQL_HOST
+          value: "mysql"
+        ports:
+        - containerPort: 8181

@@ -6,6 +6,6 @@ spring:
   application.name: spring-mysql-docker
   jpa.hibernate.ddl-auto: none
   datasource:
-    url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/mysql_test
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/mysql_test?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false&allowPublicKeyRetrieval=true
     username: root
     password: root

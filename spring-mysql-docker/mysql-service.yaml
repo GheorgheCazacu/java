@@ -1,0 +1,90 @@
+#---
+#apiVersion: v1
+#kind: Service
+#metadata:
+#  name: my-service
+#spec:
+#  selector:
+#    name: spring-mysql-docker
+#  ports:
+#    - protocol: TCP
+#      port: 8181
+#      targetPort: 8181
+# Define a 'Service' To Expose mysql to Other Services
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql  # DNS name
+  namespace: "default"
+  labels:
+    app: mysql
+    tier: database
+spec:
+  ports:
+  - port: 3306
+    targetPort: 3306
+  selector:       # mysql Pod Should contain same labels
+    app: mysql
+    tier: database
+  clusterIP: None  # We Use DNS, Thus ClusterIP is not relevant---
+---
+# Configure 'Deployment' of mysql server
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+  labels:
+    app: mysql
+    tier: database
+spec:
+  selector: # mysql Pod Should contain same labels
+    matchLabels:
+      app: mysql
+      tier: database
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels: # Must match 'Service' and 'Deployment' selectors
+        app: mysql
+        tier: database
+    spec:
+      containers:
+      - name: mysql
+        image: test-mysql-docker:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 3306
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: "root"
+#---
+#apiVersion: v1
+#kind: Pod
+#metadata:
+#  name: spring-mysql-docker
+#  labels:
+#    app: web
+#spec:
+#  containers:
+#    - name: mysql
+#      image: test-mysql-docker:latest
+#      imagePullPolicy: Never
+#      ports:
+#        - containerPort: 3306
+#      env:
+#        - name: MYSQL_ROOT_PASSWORD
+#          value: "root"
+#      terminationMessagePath: "/tmp/my-log"
+#    - name: web
+#      image: web-spring:latest
+#      imagePullPolicy: Never
+#      ports:
+#        - containerPort: 8181
+#      env:
+#        - name: SPRING_PROFILES_ACTIVE
+#          value: "docker"
+#        - name: MYSQL_HOST
+#          value: "mysql"
+#      terminationMessagePath: "/tmp/my-log"
