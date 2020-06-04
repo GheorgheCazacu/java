@@ -1,3 +1,4 @@
+import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
 
 //group 'com.clyde.tutorial'
 //version '1.0-SNAPSHOT'
@@ -30,5 +31,10 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+task buildMyAppImage(type: DockerBuildImage) {
+    inputDir = file('.')
+    images.add('web-spring:latest')
 }
 

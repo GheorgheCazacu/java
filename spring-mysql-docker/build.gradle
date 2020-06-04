@@ -1,3 +1,4 @@
+
 plugins {
     id 'org.springframework.boot' version '2.2.0.RELEASE' apply false
     id 'io.spring.dependency-management' version '1.0.9.RELEASE' apply true
@@ -48,7 +49,7 @@ task createMySqlAppContainer(type: DockerCreateContainer) {
 
 task buildWebAppImage(type: DockerBuildImage) {
     inputDir = file('web')
-    images.add('test-web:latest')
+    images.add('web-spring:latest')
 }
 
 task createWebAppContainer(type: DockerCreateContainer) {
@@ -57,4 +58,3 @@ task createWebAppContainer(type: DockerCreateContainer) {
     hostConfig.portBindings = ['8181:8181']
     hostConfig.autoRemove = true
 }
-
