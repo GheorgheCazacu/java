@@ -2,7 +2,7 @@
 
 ### Purpose
 The purpose of this project is to give an idea how you ca develop a spring boot application
-with a database but without installing on it on the local machine.
+with a database but without installing it on your local machine.
 
 ### Prerequisite 
 A version of docker installed locally and functional
